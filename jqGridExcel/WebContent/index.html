@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
+ 
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>JQGrid Special</title>
+        <script src="gridJS/jquery-1.4.3.min.js"  type="text/javascript"></script>
+        <script src="gridJS/grid.locale-en.js"  type="text/javascript"></script>       
+        <script src="gridJS/jquery.jqGrid.min.js" type="text/javascript"></script>
+        <link href="css/jquery-ui-1.8.5.custom.css" rel="stylesheet" type="text/css" />
+        <link href="css/ui.jqgrid.css" rel="stylesheet" type="text/css" />
+        <link href="css/ui.multiselect.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript">
+            function exportData(cols,file){
+                var columns = cols.toString().split(",");
+                var columnNms = $("#list").jqGrid('getGridParam','colNames');
+                var theads = "";
+                for(var cc=0;cc<columnNms.length;cc++){
+                    var isAdd = true;
+                    for(var p=0;p<columns.length;p++){
+                        if(cc==columns[p]){
+                            isAdd = false;
+                            break;
+                        }
+                    }
+                    if(isAdd){
+                        theads = theads +"<th>"+columnNms[cc]+"</th>"
+                    }
+                }
+                theads = "<tr>"+theads+"</tr>";
+                var mya=new Array();
+                mya=jQuery("#list").getDataIDs();  // Get All IDs
+                var data=jQuery("#list").getRowData(mya[0]);     // Get First row to get the labels
+                //alert(data['id']);
+                var colNames=new Array();
+                var ii=0;
+                for (var i in data){
+                    colNames[ii++]=i;
+                }
+ 
+                var pageHead = "Testing PDF";
+                var html="<html><head><style script='css/text'>table.tableList_1 th {border:1px solid #a8da7f; border-bottom:2px solid #a8da7f; text-align:center; vertical-align: middle; padding:5px; background:#e4fad0;}table.tableList_1 td {border:1px solid #a8da7f; text-align: left; vertical-align: top; padding:5px;}</style></head><body><div class='pageHead_1'>"+pageHead+"</div><table border='"+(file=='pdf'? '0' : '1')+"' class='tableList_1 t_space' cellspacing='10' cellpadding='0'>"+theads;
+                //alert('len'+mya.length);
+                for(i=0;i<mya.length;i++)
+                {
+                    html=html+"<tr>";
+                    data=jQuery("#list").getRowData(mya[i]); // get each row
+                    for(j=0;j<colNames.length;j++){
+                        var isjAdd = true;
+                        for(var pj=0;pj<columns.length;pj++){
+                            if(j==columns[pj]){
+                                isjAdd = false;
+                                break;
+                            }
+                        }
+                        if(isjAdd){
+                            html=html+"<td>"+data[colNames[j]]+"</td>"; // output each column as tab delimited
+                        }
+                    }
+                    html=html+"</tr>";  // output each row with end of line
+ 
+                }
+                html=html+"</table></body></html>";  // end of line at the end
+                //alert(html);
+                document.formstyle.pdfBuffer.value=html;
+                document.formstyle.fileType.value=file;
+                document.formstyle.method='POST';
+                document.formstyle.action='/Test/GenerateGridPDFs';  // send it to server which will open this contents in excel file
+                document.formstyle.submit();
+            }
+            function fillGridOnEvent(){
+                $("#jQGrid").html("<table id=\"list\"></table><div id=\"page\"></div>");
+                jQuery("#list").jqGrid({
+                    url:'<%=request.getContextPath()%>/JQGridServlet?q=1&action=fetchData',
+                    datatype: "xml",
+                    height: 250,
+                    colNames:['Sr. No.','Student Name','Student Std.','Student RollNo.',"Action"],
+                    colModel:[
+                        {name:'srNo',index:'srNo', width:90,sortable:true},
+                        {name:'stdName',index:'stdName', width:130,sortable:false},
+                        {name:'stdStd',index:'stdStd', width:100,sortable:false},
+                        {name:'stdRollNo',index:'stdRollNo', width:180,sortable:false},
+                        {name:'view',index:'view', width:100,sortable:false}
+                    ],
+                    multiselect: false,
+                    paging: true,
+                    rowNum:10,
+                    rowList:[10,20,30],
+                    pager: $("#page"),
+                    loadonce:true,
+                    caption: "Student Details"
+                }).navGrid('#page',{edit:false,add:false,del:false});
+            }
+            jQuery().ready(function (){
+                //fillGrid();
+            });
+        </script>
+    </head>
+    <body onload="fillGridOnEvent();">
+ 
+        <!--Below link calls for PDF Generation param '4' excludes column in PDF-->
+        <a href="javascript:void(0);" onclick="exportData('4','pdf');">Save as PDF</a>
+        <a href="javascript:void(0);" onclick="exportData('4','xls');">Save as Excel</a>
+ 
+        <div id="jQGrid" align="center">
+        </div>
+        <form id="formstyle" action="" method="post" name="formstyle">
+            <input type="hidden" name="pdfBuffer" id="pdfBuffer" value="" />
+            <input type="hidden" name="fileName" id="fileName" value="GridPDF" />
+            <input type="hidden" name="fileType" id="fileType" value="" />
+        </form>
+    </body>
+</html>

@@ -1,0 +1,86 @@
+LIB11926	HiSeq - Required
+LIB11927	Not Required
+LIB11926	HiSeq - Required
+LIB11927	Run Scheduled
+LIB11927	Sequencing Completed
+LIB11926	Run Scheduled
+
+
+if(checkLibraryWithSeqStatusExist(libPoolNameList, libPoolName, sequenceStatus)){
+					libPoolNameList.add(libraryPoolNameWithStatus);
+	}else if(libPoolNameList.contains(libraryPoolNameWithStatus)){					
+		//ErrorList duplicate	
+		errorList.add("Record #" + (totRec + 1) +" " +libPoolName+ " with same sequence status repeated");
+	}else if(checkNotExistRepeatStatus(libPoolNameList, libPoolName, sequenceStatus )){
+		//Not exist
+		errorList.add("Record #" + (totRec + 1) +" " +libPoolName+ " should be any one of the following status Not Required/Run Scheduled/Sequencing Completed");
+	}else{
+		errorList.add("Record #" + (totRec + 1) +" " +libPoolName+ " cannot be with Not Required/Run Scheduled/Sequencing Completed status");
+	}
+				
+				
+private boolean checkLibraryWithSeqStatusExist(ArrayList<String>  libPoolNameList, String libPoolName, String sequenceStatus) {
+		if(libPoolNameList.size() > 0){
+			for(int i = 0; i < libPoolNameList.size(); ++i){
+				String[] splitData = libPoolNameList.get(i).split("#");
+				for(int j = 0; j < splitData.length; ++j){
+					if(splitData[0].equalsIgnoreCase(libPoolName) && (!GenelimsConstants.NOT_REQUIRED.equalsIgnoreCase(sequenceStatus) && !GenelimsConstants.RUN_SCHEDULED.equalsIgnoreCase(sequenceStatus) && !GenelimsConstants.SEQUENCING_COMPLETED.equalsIgnoreCase(sequenceStatus))){
+						if(libPoolNameList.contains((libPoolName+"#"+sequenceStatus))){
+							return false;
+						}
+						return true;
+					}else if(!splitData[0].equalsIgnoreCase(libPoolName)){
+						//return true;
+						break;
+					} else{
+						return false;
+					}
+				}
+			}
+		}else{
+			return true;
+		}		
+		return true;
+	}
+	
+	
+private boolean checkNotExistRepeatStatus(
+			ArrayList<String> libPoolNameList, String libPoolName,
+			String sequenceStatus) {
+		if(libPoolNameList.size() > 0){
+			for(int i = 0; i < libPoolNameList.size(); ++i){
+				String[] splitData = libPoolNameList.get(i).split("#");
+				for(int j = 0; j < splitData.length; ++j){
+					if(splitData[0].equalsIgnoreCase(libPoolName) && (GenelimsConstants.NOT_REQUIRED.equalsIgnoreCase(sequenceStatus) || GenelimsConstants.RUN_SCHEDULED.equalsIgnoreCase(sequenceStatus) || GenelimsConstants.SEQUENCING_COMPLETED.equalsIgnoreCase(sequenceStatus))){
+						return true;
+					}else if(!splitData[0].equalsIgnoreCase(libPoolName)){
+						break;
+					}else{
+						return false;
+					}
+				}
+			}
+		}else{
+			return true;
+		}
+		return true;
+	}
+	
+	LIB11926	HiSeq - Required
+LIB11927	Not Required
+LIB11926	HiSeq - Required
+LIB11927	Run Scheduled
+LIB11927	Sequencing Completed
+LIB11926	Run Scheduled
+	
+	if(checkLibraryWithSeqStatusExist(libPoolNameList, libPoolName, sequenceStatus)){
+					libPoolNameList.add(libraryPoolNameWithStatus);
+				}else if(libPoolNameList.contains(libraryPoolNameWithStatus)){					
+					//ErrorList duplicate	
+					errorList.add("Record #" + (totRec + 1) +" " +libPoolName+ " with same sequence status repeated");
+				}else if(checkNotExistRepeatStatus(libPoolNameList, libPoolName, sequenceStatus )){
+					//Not exist
+					errorList.add("Record #" + (totRec + 1) +" " +libPoolName+ " should be any one of the following status Not Required/Run Scheduled/Sequencing Completed");
+				}else{
+					errorList.add("Record #" + (totRec + 1) +" " +libPoolName+ " cannot be with Not Required/Run Scheduled/Sequencing Completed status");
+				}
