@@ -28,6 +28,13 @@ public class PredicateMain {
 		System.out.println("Apple weight******"+appleColor.getWeight());
 	}
 	
+	List<Apple> appleByWeight= compareApple.filterApples(apples, CompareAppleByProp::isHeavyApple);
+	
+	for(Apple appleWeight: appleByWeight){
+		System.out.println("AppleByWeight Color******"+appleWeight.getColor());
+		System.out.println("AppleByWeight******"+appleWeight.getWeight());
+	}
+	
 
 	}
 
