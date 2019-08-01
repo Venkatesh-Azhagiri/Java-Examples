@@ -1,6 +1,6 @@
 package dataTypeExample;
 
-import com.itextpdf.text.log.SysoLogger;
+
 
 public class Eg1 {
 
@@ -8,7 +8,7 @@ public class Eg1 {
 		Long a = new Long(1);
 		long b = 2;
 		a = null;
-		b = Long.vanull;
+		b = Long.valueOf(null);
 		if(a == null){
 			System.out.println("if");
 			a  = new Long(2);
