@@ -10,6 +10,7 @@ public class Filter {
 		List<Employee> employees = new ArrayList<Employee>();
 		constructEmployeeData(employees);
 		if(employees!=null){
+			//Lamba Expression
 			List<Employee> list=employees.stream()
 					.filter(e->e.getSalary().equals(2000L))
 					.collect(Collectors.toList());
