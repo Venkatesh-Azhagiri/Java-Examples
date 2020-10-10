@@ -12,6 +12,7 @@ public class InterviewScheduler implements Runnable{
 
 	@Override
 	public void run() {
+		//Total 10 Candidates
 		for(int i=1; i<=10; ++i) {
 			String msg= "Candidate::"+i;
 			try {
